@@ -1,11 +1,13 @@
 package cell
 
-var defaultCell = Cell{make(map[string]func() interface{})}
+var defaultCell = Cell{make(map[string]func() interface{}), nil}
 var Regist = defaultCell.Regist
 var Spilt = defaultCell.Split
+var RegistDefault = defaultCell.RegistDefault
 
 type Cell struct {
-	kvs map[string]func() interface{}
+	kvs      map[string]func() interface{}
+	defaultF func() interface{}
 }
 
 func New() *Cell { return &Cell{make(map[string]func() interface{})} }
@@ -15,6 +17,8 @@ func (c *Cell) Regist(keys []string, f func() interface{}) {
 		c.kvs[key] = f
 	}
 }
+
+func (c *Cell) RegistDefault(f func() interface{}) { c.defaultF = f }
 
 type SplitOptions struct {
 	Ks []string
@@ -36,6 +40,9 @@ func (c *Cell) Split(key string, o *SplitOptions) interface{} {
 			}
 		}
 		return dst
+	}
+	if c.defaultF != nil {
+		return c.defaultF()
 	}
 	return nil
 }
