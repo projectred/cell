@@ -1,15 +1,15 @@
 package cell
 
-var defaultCell = Cell{make(map[string][]interface{})}
+var defaultCell = Cell{make(map[string]func() interface{})}
 var Regist = defaultCell.Regist
 var Spilt = defaultCell.Split
 
 type Cell struct {
-	kvs map[string][]interface{}
+	kvs map[string]func() interface{}
 }
 
-func (c *Cell) Regist(key string, main interface{}) {
-	c.kvs[key] = []interface{}{main}
+func (c *Cell) Regist(key string, f func() interface{}) {
+	c.kvs[key] = f
 }
 
 type SplitOptions struct {
@@ -22,17 +22,16 @@ type FillF interface {
 }
 
 func (c *Cell) Split(key string, o *SplitOptions) interface{} {
-	if source, ok := c.kvs[key]; ok {
-		var dst [1]interface{}
-		copy(dst[:], source)
+	if f, ok := c.kvs[key]; ok {
+		dst := f()
 		if o != nil {
-			if f, ok := dst[0].(FillF); ok {
+			if f, ok := dst.(FillF); ok {
 				for i, k := range o.Ks {
 					f.Fill(k, o.Vs[i])
 				}
 			}
 		}
-		return dst[0]
+		return dst
 	}
 	return nil
 }

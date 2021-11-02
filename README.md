@@ -23,7 +23,7 @@ type A interface {
 }
 
 type DefaultA struct {
-	v int `tag:"v"`
+	v int
 }
 
 func (a *DefaultA) Fill(k string, v interface{},tag string){
@@ -35,7 +35,7 @@ func (a *DefaultA) Fill(k string, v interface{},tag string){
 func (a *DefaultA) Value() int { return a.V }
 
 func init() {
-    cell.Regist("defaultA", &DefaultA{v: 1})
+    cell.Regist("defaultA", func() interface{} {&DefaultA{v: 1}} )
 }
 ```
 
@@ -51,5 +51,7 @@ func main() {
     a.Value() // 1
     a = cell.Spilt("defaultA", &SplitOptions{[]string{"v"}, []interface{}{1024}).(A)
     a.Value() // 1024
+	a = cell.Spilt("defaultA", nil).(A)
+    a.Value() // 1
 }
 ```
