@@ -15,7 +15,7 @@ func (f *Foo) Fill(k string, v interface{}) {
 }
 
 func TestSpilt(t *testing.T) {
-	Regist("foo", func() interface{} { return &Foo{"bar"} })
+	Regist([]string{"foo"}, func() interface{} { return &Foo{"bar"} })
 	foo := Spilt("foo", nil).(*Foo)
 	if foo.bar != "bar" {
 		t.Errorf("it should be 'bar', but it is %s", foo.bar)
@@ -31,14 +31,14 @@ func TestSpilt(t *testing.T) {
 }
 
 func BenchmarkSpilt(b *testing.B) {
-	Regist("foo", func() interface{} { return &Foo{} })
+	Regist([]string{"foo"}, func() interface{} { return &Foo{} })
 	for i := 0; i < b.N; i++ {
 		_ = Spilt("foo", nil).(*Foo)
 	}
 }
 
 func BenchmarkSpiltWithFill(b *testing.B) {
-	Regist("foo", func() interface{} { return &Foo{} })
+	Regist([]string{"foo"}, func() interface{} { return &Foo{} })
 	o := &SplitOptions{[]string{"bar"}, []interface{}{"foo"}}
 	for i := 0; i < b.N; i++ {
 		_ = Spilt("foo", o).(*Foo)

@@ -8,8 +8,10 @@ type Cell struct {
 	kvs map[string]func() interface{}
 }
 
-func (c *Cell) Regist(key string, f func() interface{}) {
-	c.kvs[key] = f
+func (c *Cell) Regist(keys []string, f func() interface{}) {
+	for _, key := range keys {
+		c.kvs[key] = f
+	}
 }
 
 type SplitOptions struct {
