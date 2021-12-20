@@ -8,6 +8,8 @@ type Cell struct {
 	kvs map[string]func() interface{}
 }
 
+func New() *Cell { return &Cell{make(map[string]func() interface{})} }
+
 func (c *Cell) Regist(keys []string, f func() interface{}) {
 	for _, key := range keys {
 		c.kvs[key] = f
