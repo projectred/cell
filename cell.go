@@ -10,7 +10,7 @@ type Cell struct {
 	defaultF func() interface{}
 }
 
-func New() *Cell { return &Cell{make(map[string]func() interface{})} }
+func New() *Cell { return &Cell{make(map[string]func() interface{}), nil} }
 
 func (c *Cell) Regist(keys []string, f func() interface{}) {
 	for _, key := range keys {
